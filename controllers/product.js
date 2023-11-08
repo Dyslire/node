@@ -75,7 +75,7 @@ export async function addOneProduct(req, res) {
 
 
   // export async function updateProduct(req, res, next) {
-  //   const productId = req.params.productId
+  //   const productId = req.params.id
   //   console.log(productId)
   //   const existingProduct= await product.findById(productId);
    
@@ -108,41 +108,20 @@ export async function addOneProduct(req, res) {
   // }
 
 
-//   export async function updateProduct(req, res) {
-//     if (!validationResult(req).isEmpty()) {
-//         return res.status(500).json({ errors: validationResult(req).array() });
-//     }else{
+  export async function updateProduct(req, res) {
+    if (!validationResult(req).isEmpty()) {
+        return res.status(500).json({ errors: validationResult(req).array() });
+    }else{
+      const productId = req.params.id;
+    let found = await product.findOneAndModify({ _id: req.params.id })
+    console.log(found)
 
-//     const found = await product.findByIdAndUpdate({ _id: req.params.id })
-//     console.log(found)
-
-//     const product = await product.findById({ _id: req.params.id }
+    let product = await product.findById({ _id: req.params.id }
     
-//     );
+    );
 
-//     return res.status(200).send({ product,found, message: "Success: match Is Updated" });
+    return res.status(200).send({ product,found, message: "Success: match Is Updated" });
 
-//     }
-// };
-
-
-export async function updateProduct(req, res) {
-const { prix } = req.body.prix;
-const productId = req.params.id;
-await product.findById(productId);
-log.console(product);
-try {
-
-  if (!product) {
-    return res.status(404).send('Product not found');
-  }
-
-  product.prix = prix ;
-  await product.save();
-
-  res.status(200).send({ message: 'Product updated successfully' });
-} catch (error) {
-  console.error(error);
-  res.status(500).send('Internal server error');
-}
+    }
 };
+

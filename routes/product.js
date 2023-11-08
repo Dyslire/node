@@ -23,7 +23,7 @@ router.route("/products/:availability").get(getProductsByAvailability);
 
 router.route("/products/:productId").delete(deleteProductByID); 
 
-router.route("/products/:productId").put(updateProduct); 
+router.route("/products/:id").put(updateProduct); 
 
 
 
