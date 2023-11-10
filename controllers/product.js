@@ -74,54 +74,20 @@ export async function addOneProduct(req, res) {
   }
 
 
-  // export async function updateProduct(req, res, next) {
-  //   const productId = req.params.id
-  //   console.log(productId)
-  //   const existingProduct= await product.findById(productId);
-   
-  
-  //   if (!existingProduct) {
-  //     return res.status(404).json({ message: 'product not found' });
-  //   }
-  //    console.log("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-  //   console.log(existingProduct);
-  //   if (req.body.name) {
-  //     existingProduct.name = req.body.name;
-  //   }
-  //   if (req.body.description) {
-  //     existingProduct.description = req.body.description;
-  //   }
-  //   if (req.body.prix) {
-  //     existingProduct.prix = req.body.prix;
-  //   }
-  //   if (req.body.availability) {
-  //     existingProduct.availability = req.body.availability;
-  //   }
-  //   if (req.body.image) {
-  //     existingProduct.image = req.body.image;
-  //   }
-  
-  //   const Productupdate = await existingProduct.save();
-  //   await existingProduct.save()
-  //     .then(prod => res.status(200).json({ updateProduct: Productupdate }))
-  //     .catch(error => res.status(400).json({ error }));
-  // }
 
+  export async function updateProduct(req, res, next) {
+    try {
+      const existingProduct = await product.findById(req.params.id);
+      if (!existingProduct) {
+        return res.status(404).json({ message: 'Menu not found' });
+      }
 
-  export async function updateProduct(req, res) {
-    if (!validationResult(req).isEmpty()) {
-        return res.status(500).json({ errors: validationResult(req).array() });
-    }else{
-      const productId = req.params.id;
-    let found = await product.findOneAndModify({ _id: req.params.id })
-    console.log(found)
-
-    let product = await product.findById({ _id: req.params.id }
-    
-    );
-
-    return res.status(200).send({ product,found, message: "Success: match Is Updated" });
-
+      const updateProduct = await product.findByIdAndUpdate(req.params.id,req.body,{
+        new:true,
+        runValidators:true    })
+      res.status(200).json({ updateProduct: updateProduct });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
     }
-};
+  };
 
