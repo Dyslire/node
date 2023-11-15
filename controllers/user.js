@@ -27,30 +27,47 @@ export function getAllUsers(req, res) {
     });
 }
 
-export function addUser(req, res) {
-  if (!validationResult(req).isEmpty()) {
-    res.status(400).json({ errors: validationResult(req).array() });
-  } else {
-    User.create({
-      email: req.body.email,
-      password: req.body.password,
-      nom: req.body.nom,
-      prenom: req.body.prenom,
-      dateNaissance: req.body.dateNaissance,
-      adress: req.body.adress,
-      cin: req.body.cin,
-      userName: req.body.userName,
-      lastPassword: req.body.lastPassword,
-      isValid: req.body.isValid,
-      imageRes: req.body.imageRes,
-      role: req.body.role,
-    })
-      .then((newUser) => {
-        res.status(200).json(newUser);
-      })
-      .catch((err) => {
-        res.status(500).json({ error: err });
-      });
+export async function addUser(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const {
+    email,
+    password,
+    nom,
+    prenom,
+    dateNaissance,
+    adress,
+    cin,
+    userName,
+    lastPassword,
+    isValid,
+    imageRes,
+    role,
+  } = req.body;
+
+  try {
+    const newUser = await User.create({
+      email,
+      password, // No password hashing
+      nom,
+      prenom,
+      dateNaissance,
+      adress,
+      cin,
+      userName,
+      lastPassword,
+      isValid,
+      imageRes,
+      role,
+    });
+
+    res.status(200).json(newUser);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 }
 
